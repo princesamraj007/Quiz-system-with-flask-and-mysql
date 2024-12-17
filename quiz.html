@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .quiz-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        p {
+            font-size: 18px;
+        }
+        .timer {
+            margin: 20px 0;
+            font-size: 22px;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        form {
+            margin-top: 20px;
+        }
+        input {
+            width: 60px;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <script>
+        let countdownTime = {{ remaining_time }};  
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${minutes < 10 ? '0' : ''}${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+        }
+
+        function startTimer() {
+            const timerElement = document.getElementById("timer");
+
+            const interval = setInterval(function() {
+                countdownTime--;
+                timerElement.textContent = formatTime(countdownTime);
+
+                if (countdownTime <= 0) {
+                    clearInterval(interval);
+                    window.location.href = "/result";  
+                }
+            }, 1000);
+        }
+
+        window.onload = function() {
+            startTimer();
+        };
+    </script>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>{{ question[1] }}</h1>  
+        <p>A: {{ question[2] }}</p>  
+        <p>B: {{ question[3] }}</p>  
+        <p>C: {{ question[4] }}</p>  
+        <p>D: {{ question[5] }}</p>  
+
+        <div class="timer">
+            Time Left: <span id="timer">01:00</span>
+        </div>
+
+        <form method="POST" action="/quiz">
+            <label for="answer">Your Answer (A, B, C, D):</label>
+            <input type="text" id="answer" name="answer" maxlength="1" required>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</body>
+</html>
